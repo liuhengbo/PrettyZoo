@@ -44,7 +44,7 @@ applicationDefaultJvmArgs = runArgsValue
 jlink {
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
     addExtraDependencies("javafx")
-    forceMerge("jackson", "log4j-api")
+    forceMerge("jackson", "log4j-api", "log4j-slf4j2-impl", "slf4j")
     launcher {
         name = 'prettyZoo'
         jvmArgs = runArgsValue
