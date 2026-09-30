@@ -22,6 +22,8 @@ import com.jfoenix.controls.JFXSlider;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Comparator;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -57,6 +60,9 @@ public class MainViewController {
 
     @FXML
     private ListView<ServerConfigurationVO> serverListView;
+
+    @FXML
+    private TextField serverSearchTextField;
 
     @FXML
     private VBox serverButtons;
@@ -340,7 +346,24 @@ public class MainViewController {
                 }
             });
         prettyZooFacade.loadServerConfigurations(new DefaultConfigurationListener(configurationVO));
-        serverListView.itemsProperty().set(configurationVO.getServers());
+
+        var filteredServers = new FilteredList<>(configurationVO.getServers());
+        var sortedServers = new SortedList<>(filteredServers,
+            Comparator.comparing(ServerConfigurationVO::getDisplayName, String::compareTo));
+        serverListView.itemsProperty().set(sortedServers);
+        initServerSearchTextField(filteredServers);
+    }
+
+    private void initServerSearchTextField(FilteredList<ServerConfigurationVO> filteredServers) {
+        serverSearchTextField.setOnAction(e -> {
+            String keyword = serverSearchTextField.getText();
+            if (keyword == null || keyword.isBlank()) {
+                filteredServers.setPredicate(null);
+            } else {
+                filteredServers.setPredicate(server ->
+                    server.getDisplayName().toLowerCase().contains(keyword.toLowerCase()));
+            }
+        });
     }
 
     private double calculateDividerPositions() {

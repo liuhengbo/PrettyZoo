@@ -37,6 +37,22 @@ public class ServerConfigurationVO {
     private ObjectProperty<ConnectionConfigurationVO> connectionConfiguration
             = new SimpleObjectProperty<>(new ConnectionConfigurationVO());
 
+    /**
+     * 列表展示名称：优先使用备注(zkAlias)，否则回退到 host:port 或远程地址
+     */
+    public String getDisplayName() {
+        if (zkAlias.get() != null && !zkAlias.get().isBlank()) {
+            return zkAlias.get();
+        }
+        if (zkHost.get() != null && !zkHost.get().isBlank()) {
+            return zkHost.get() + ":" + zkPort.get();
+        }
+        if (sshEnabled.get()) {
+            return remoteServer.get() + ":" + remoteServerPort.get();
+        }
+        return id.get();
+    }
+
     public void update(ServerConfigurationVO config) {
         id.set(config.getId());
         zkHost.set(config.getZkHost());

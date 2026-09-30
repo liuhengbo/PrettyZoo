@@ -151,18 +151,7 @@ public class ZkServerListCell extends ListCell<ServerConfigurationVO> {
     }
 
     private String serverNameFormat(ServerConfigurationVO item) {
-        String alias = item.getZkAlias();
-        if (alias != null && !alias.isBlank()) {
-            return alias;
-        }
-        String zkHost = item.getZkHost();
-        if (zkHost != null && !zkHost.isBlank()) {
-            return zkHost + ":" + item.getZkPort();
-        }
-        if (item.isSshEnabled()) {
-            return item.getRemoteServer() + ":" + item.getRemoteServerPort();
-        }
-        return item.getId();
+        return item.getDisplayName();
     }
 
     private void initContextMenu(ServerStatus newValue) {

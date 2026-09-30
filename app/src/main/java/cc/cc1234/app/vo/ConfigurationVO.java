@@ -6,7 +6,9 @@ import javafx.collections.ObservableList;
 
 public class ConfigurationVO {
 
-    private ObservableList<ServerConfigurationVO> servers = FXCollections.observableArrayList();
+    // 使用 extractor 监听 zkAlias 变化，使依赖备注排序的 SortedList 能在改名后自动重排
+    private ObservableList<ServerConfigurationVO> servers =
+            FXCollections.observableArrayList(server -> new javafx.beans.Observable[]{server.zkAliasProperty()});
 
     private SimpleStringProperty theme = new SimpleStringProperty();
 
